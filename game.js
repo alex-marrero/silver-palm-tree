@@ -83,21 +83,23 @@ class MainScene extends Phaser.Scene {
     
     // Create enemies
     this.enemies = this.physics.add.group();
-    const enemy = this.enemies.create(400, 500, 'enemy');
+    const enemy = this.enemies.create(400, 50, 'enemy');
     enemy.setBounce(0.2);
     enemy.setCollideWorldBounds(true);
-    enemy.setVelocityX(100);
+    enemy.setVelocityX(0); // No initial horizontal velocity
     enemy.direction = 'right';
+    enemy.hasLanded = false; // Track if the enemy has landed on a platform
     
     // Create coins
     this.coins = this.physics.add.group({
       key: 'coin',
       repeat: 11,
-      setXY: { x: 12, y: 0, stepX: 70 }
+      setXY: { x: 12, y: 50, stepX: 70 }
     });
     
     this.coins.children.iterate((child) => {
       child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+      child.setCollideWorldBounds(true);
     });
     
     // Create finish flag
@@ -143,14 +145,23 @@ class MainScene extends Phaser.Scene {
       this.player.setVelocityY(-330);
     }
 
-    // Enemy AI - change direction at world bounds
+    // Enemy AI - check if enemy has landed and then change direction at world bounds
     this.enemies.children.iterate((enemy) => {
-      if (enemy.body.touching.right || enemy.x > 750) {
-        enemy.setVelocityX(-100);
-        enemy.direction = 'left';
-      } else if (enemy.body.touching.left || enemy.x < 50) {
-        enemy.setVelocityX(100);
-        enemy.direction = 'right';
+      // Check if enemy has landed on a platform
+      if (!enemy.hasLanded && enemy.body.touching.down) {
+        enemy.hasLanded = true;
+        enemy.setVelocityX(100); // Start moving right once landed
+      }
+      
+      // Only handle directional changes if the enemy has landed
+      if (enemy.hasLanded) {
+        if (enemy.body.touching.right || enemy.x > 750) {
+          enemy.setVelocityX(-100);
+          enemy.direction = 'left';
+        } else if (enemy.body.touching.left || enemy.x < 50) {
+          enemy.setVelocityX(100);
+          enemy.direction = 'right';
+        }
       }
     });
   }
@@ -166,7 +177,7 @@ class MainScene extends Phaser.Scene {
     // Create more coins if all coins are collected
     if (this.coins.countActive(true) === 0) {
       this.coins.children.iterate((child) => {
-        child.enableBody(true, child.x, 0, true, true);
+        child.enableBody(true, child.x, 50, true, true);
       });
     }
   }
