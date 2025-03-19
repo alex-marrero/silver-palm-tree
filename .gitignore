@@ -1,0 +1,58 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+.pnp.*
+.pnp.js
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build directories
+/dist
+/build
+/out
+/.next
+/.nuxt
+/.vuepress/dist
+
+# Coverage directories
+/coverage
+/.nyc_output
+/cypress/videos/
+/cypress/screenshots/
+
+# Editor/IDE specific
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+.project
+.classpath
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# Misc
+.cache/
+.temp/
+*.tgz
+.eslintcache
+.yarn-integrity
+
